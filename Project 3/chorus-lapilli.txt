@@ -1,0 +1,180 @@
+Aleah Breen 306221409
+chorus-lapilli
+
+
+
+SETUP:
+
+I started by installing Node.js, which provides a framework for JavaScript apps on my computer. This came with the Node package manager (npm), which is incredibly helpful for our project because it lets me perform "npm install" and "npm start" later.
+
+The base template code was then downloaded as a zip file from https://codesandbox.io/s/ljg0t8?file=/App.js&utm_medium=sandpack. I used cd in a terminal to navigate to the unzipped directory on my PC after unzipping the template.
+
+I installed all the dependencies required to launch the project by running npm install.
+
+I created a local server by running npm start.  The template was now shown live in my browser as a single square with an X once the server had been changed with the new code after I saved it. 
+
+
+
+THE BOARD:
+
+There is now only one return statement for a single square button in App.js. I used "<React.Fragment> <React.Fragment/>"—also referred to as fragments—to enclose this single element. I enclosed this lone piece in parenthesis. As long as the JSX elements are contained within the fragment tags, I can now return several of them.
+
+Three divs having the class name "board-row" and three buttons having the class name "square" were made inside the fragments. These buttons were filled with the numbers 1–9 (the first div contained 1-3, the second div contained 4-6, and the third div contained 7-9). As a result, a 3x3 square with the numbers 1-3 on the very first row, 4-6 for the second, and 7-9 with the third row was shown in the browser.
+
+
+
+THE SQUARE:
+
+However, this is quite repetitious and laborious, so I choose to use components. I renamed it "export default function Board()" and copied and pasted the entire previous component. To prevent it from interfering with the Board, I removed the "default export" and all of the code contained in the original Square component. Thus, rather than using Square as our default exported component, we instead use the Board component.
+
+A single JSX button element with the class name "square" and the number 1 is now returned inside the square component. I used "<Square/>" to replace each button element in the Board function/component with the Square component.
+Currently, there are nine squares in a 3x3 arrangement on the screen, all of which have the number 1. 
+
+I restructured the object handed in and made it accessible by adding a value parameter inside of {} in the parameters section of the Square component. The component header now appears as "function Square({ value })".
+The value prop is then given in and replaced with "{value}" when I set the square's 1 to that value. 
+
+I inserted a "value='NUM'" to each Square JSX element in the Board component, making each square appear as "<Square value="NUM"/>," where NUM is the number that should be there (first div has 1-3 in order, second div contains 4-6, etc.).
+The board on the display now resembles a 3x3 with values 1–9 as it did before.
+
+
+
+SQUARE INTERACTIVE:
+
+My current goal was to incorporate interaction into the Square. I inserted a second function called "handleClick()" that consoles inside the Square component.For the time being, the log just states "Clicked!" as a placeholder message. I gave the "handleClick()" method to the Square component's "onClick" special prop inside the return statement.
+The "Clicked!" message is now logged inside the console whenever a square is clicked. When a click is made repeatedly, a number is displayed in the log next to the "Clicked!" message, signifying that the message has been repeated.
+
+The next objective was to have a letter appear on the display when the square was clicked. I choose to employ React States so that a square "remembers" which letter it had.
+Initially, we needed to use "import { useState } from'react'" to import this specific method at the top.
+
+After I deleted the parameters from the square component's header, the "function Square()" was once again empty. We took this action since we were no longer very interested in sending in the value as a prop.
+
+I put the new line "const [value, setValue] = useState(null);" at the start of the component, which utilizes the useState function. Value is the same as the prop we previously handed in, but this time the square can "remember" it. The function setValue is used to modify the value of variable. The square is now empty since we set this to null.
+
+The value variable is set to "X" when I use the "setValue" function inside the "handleClick()" function to replace the console.log with "setValue('X')". 
+Currently, the browser inserts an X into a square when you click on it. 
+
+I eliminated the value prop from each Square JSX element in the Board element for the sake of cleanliness.
+
+
+
+LIFTING THE STATE:
+
+Even though Tic-Tac-Toe can still be used today, having every Square maintain its own status and communicate with one another would likely become exceedingly complex and bad practice (this might become messy fast). I "lifted" the useState out and refactored it instead.
+
+I went back to how our Square component used to look, replete with a single destructured prop, a single return JSX button element, and no useState.
+
+I then made a new state variable inside the Board method. This is an array with nine members, which will be our values that should be in the square. The line "const [squares, setSquares] = useState(Array(9).fill(null));" was used to do this.
+It is added to the Board function's top. This initializes an empty array of nine members in our squares variable.
+
+I now set then passed in the value for the prop to "{squares[INDEX]}" in each Square JSX component on the Board, where INDEX is the alleged square index in order (1-3 in the first division, 4-6 in the second division, etc.).
+Even if the board isn't working at the moment, we're continually adding features.
+
+In CS32 parlance, our Square cannot truly interact directly up in the hierarchy because it is a child of the Board, but our Board can change its Square offspring. Instead, we give our square a new prop called "onSquareClick" that is activated when the square is clicked.
+The Square component's new header now reads "function Square({ value, onSquareClick })".
+To make it appear as "onClick={onSquareClick}" inside the button JSX element, we send the onSquareClick function to the button's specific onClick parameter inside the Square component.
+The onSquareClick method now executes anytime a square is clicked.
+
+Inside Board, I made a new function called "handleClick()" that accepts the index "i" as a parameter (so the header is "function handleClick(i)"). It then uses "squares.slice()" to create a copy of the squares array (const nextSquares = squares.slice()), sets the copied array's corresponding index passed in to the letter "X" (nextSquares[i] = "X"), and sets the squares variable to the copied and modified array. 
+
+In order to properly pass this down to each square, I passed a prop to the "onSquareClick" function, which is the handleClick function in the form of an arrow function, for each Square JSX element on the Board. This makes the code look like this: "onSquareClick={() => handleClick(INDEX)" where INDEX is the identical index used in the value prop for the corresponding JSX element.
+An arrow function must be used because, if it weren't, the handleClick function would be automatically executed when the board was rendered, causing it to re-render the page because the state variable had been "modified." This would then see the function once more and run it again, creating an endless loop. This is avoided by using an arrow function, which is now only called when the square is clicked, as using an arrow function is equivalent to passing a function of a function.
+The conduct of our board has now returned to its pre-state condition.
+
+
+
+TURN TAKING:
+
+To keep track of who has a turn, I created an additional state to the Board component with this line:
+const [xIsNext, setXIsNext] = useState(true);
+This creates a new state variable named "xIsNext" and a function called "setXIsNext" to change it.
+
+A straightforward if-else logic statement that sets the nextSquares array at index i to a "X" or "O" depending on the xIsNext state variable was used in place of the single line that sets nextSquares[i] to "X" inside the handleClick function in the Board component. NextSquares[i] is set to "X" if the variable is true and to "O" otherwise. I call the setXIsNext variable at the conclusion of the method and set it to the opposite of whatever boolean xIsNext is.
+Now that the squares are in alternating order and should support O's in addition to X's when clicked, I encountered the problem of being able to overwrite existing characters.
+
+In order to address this, I included a brief if statement at the start of the handleClick() function that uses the line if (squares[i])... to determine whether squares[i] is null.
+This now determines whether anything already exists in that index (it is not null), and if it does, the function will return automatically. In addition to not flipping the turn in the xIsNext state variable, this avoids running the remaining code and never overwrites the letter that is currently in the square.
+
+I now have a working turn-taking system that displays Xs and Os across the board.
+
+
+
+WINNER LOGIC:
+
+I added a new method named "calculateWinner" to the entire App.js file. It uses the game logic to determine whether a winner exists and contains the only parameter "squares," which is the board array of squares.
+The function's code is located under "Declaring a Winner" on the https://react.dev/learn/tutorial-tic-tac-toe page. In summary, it is a for loop that determines whether all of the winning index combinations' elements are the same and non-null.
+
+In order to track the game state as a text, I introduced a new local variable named "status" to the Board component. This text appears inside the return statement in a text component.
+A new div with the class name "status" was placed to the top of the return for the Board, and the status variable was passed in inside of it.
+"<div className="status">{status}</div>"
+But as of right now, status indicates nothing.
+
+I subsequently put the status logic into practice, so that just before it, it computes the winner, if there is one, using the calculateWinner function and passes it on the current board before storing the result in a constant variable named "winner".
+I then set the status text to "Winner X" or "Winner O" if there is a winner, meaning that calculateWinner does not return null; if not, we set the status text to "Next player: X" or "Next player: O." A ternary if-statement is used to identify the X or O portion in the else part of the status logic. 
+"status = 'Next player: ' + (xIsNext ? 'X' : 'O');"
+
+A player can still add Xs and Os to the boxes after a game is over, but the status now accurately shows who has a turn and who won once one is located.
+
+To avoid this, I added an or "||" to the if statement that checks whether the square at the start of the handleClick() method is non-null, and I used the calculateWinner function to see if there was a winner. The if statement will run and return early if there is a winner because the function will return a non-null value.
+"if (squares[i] || calculateWinner(squares)) return;"
+
+I now got a complete and working tic tac toe game in React!
+
+
+
+CHORUS-LAPILLI RULES
+--------------------
+
+
+CAPPING PLAYERS:
+
+My current goal is to start putting the chorus lapilli rules into practice. Making sure you can only have three things on a board at once is my first objective. In order to accomplish this, I first made a for loop at the top of my board component that iterates through the squares' current state and counts the number of Xs and Os, saving the counts in the appropriate variables.
+Later on, I utilize this to see how many Xs and Os are present on a board at once.
+
+I then added two new if statements to the handleClick method. One that determines whether it is X's turn and if the number of X squares equals three, and another that determines whether it is O's turn and whether the number of O squares equals three. The function instantly returns if either of these conditions is met, limiting the player to three objects on the board and preventing them from adding any more turns. 
+Each player can no longer make moves after they have three pieces on the board.
+
+
+
+SELECT WHICH PIECE TO MOVE:
+
+Making sure the player may only move pieces that are already on the board is one of the components of our chorus-lapilli. All I wanted to do was finish the mechanism that allows them to select which piece to move. 
+
+In order to know which piece the user wished to move when they subsequently choose which position to move it to, I had to first develop a new state to keep that information. I accomplished this by creating a new state named movingSquare and initializing its function setMovingSquare to null. There is no selected square while it is in a null state.
+useState(null) = const [movingSquare, setMovingSquare);
+
+I then had to modify handleClick's initial if statement in order to really finish the selection logic. Thus, I repositioned the if square contains an item in it condition to be below the calculateWinner if statement at the top, which was previously separated from it. 
+
+I included a nested if statement inside the two if statements I created in the previous step to check the numOs and numXs. This statement verified that the square clicked on truly had the piece that matched the player taking its turn. Therefore, the moving square with the isMovingSquare function would be set to the clicked position if it was O's turn and the square they clicked contained an O piece.
+
+Our movingSquare state is now set to the correct square, but there isn't really any change in the user interface at this time. If a piece is theirs, users can now select it to relocate.
+
+
+
+MOVING THE PIECE:
+
+My next goal was to get the component to move to a specific location. I put the nextSquares variable above all of the handleClick code since I need to change it. This way, it comes immediately after the calculateWinner if statement but before my new if statements that check the numXs and numOs.
+
+To verify if the square is empty, I added a new if statement inside the numX and numO ones. To avoid inadvertently switching an empty square with another empty square, I make sure that the movableSquare is not null if the square is empty. The nextSquares array is altered so that the values of the square clicked and movingSquare are switched if both requirements are satisfied. Afterward, I update the states by setting the move to the next move, updating the current squares state with nextSquares, and setting movingSquare back to null.
+
+
+
+PIECE CAN ONLY MOVE NEXT TO ITSELF:
+
+I then expanded on this by limiting a piece's movement to one block next to it, including diagonals. I did this by copying some of the logic from calculateWinner and creating an array with arrays inside of it, each of which represents every possible spot a piece at that particular index may go to. For example, an item in the upper left corner (index 0) may travel diagonally to the bottom right (positions 1, 3, or 4), right, or down.
+
+After that, I created a function called calculateMovable that accepts four parameters: squares, startPos, endPos, and the playerLetter. It is comparable to calculateWinner. I could have made it take in xIsNext instead, but I thought playerLetter would be more practical because it required less code (albeit it's not as efficient because it compares strings instead of booleans, but it's so small that it doesn't matter in our situation). The method was positioned outside of our component, and the array is inside this function.
+
+If the endPosition falls within the array of validPositions that contains the startPosition's valid position array, I just return it inside the method after the array. 
+give back validPos[startPos].contains (endPos);
+
+Returning to the handleClick code from earlier, I include another nested if statement within the if movingSquare is valid line, which is enclosed by our numX and numO if statements.
+
+Players can now only move pieces to adjacent areas in the user interface.
+
+
+
+CENTER SQUARE RULE:
+
+I have to apply the rule of the center square. I only needed to add an if statement to calculateMovable to do this. This if statement determines whether the player's letter was in the center square. If it was, and the player's desired square was not in the center, I perform additional checks. I make a new nextSquares variable inside the if statement, simulate the move, and use calculateWinner to see if it's a winning move. If it is, it will return true, allowing the player to move the piece; if not, it will return false, requiring the player to move the center piece to another position or attempt to move another piece to a winning spot.
+
+The game is now an entirely functional chorus-lapilli!
