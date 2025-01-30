@@ -1,1 +1,0 @@
-The primary distinction is that, whilst the one in my repository only has one local branch (master, which is the default), the one in ~eggert/src/github/git contains additional local branches that are actively active or existing.
