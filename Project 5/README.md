@@ -1,4 +1,4 @@
-### README for Assignment 5: Git Repository Organization
+### Assignment 5: Git Repository Organization
 
 ---
 
